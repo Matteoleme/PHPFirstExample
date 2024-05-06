@@ -1,47 +1,45 @@
 <?php
 // Connessione al database MySQL
-$mysqli = new mysqli("localhost", "root", "", "recensioni");
-if ($mysqli->connect_errno) {
-    echo "Failed to connect to MySQL: " . $mysqli->connect_error;
+$mysqli = mysqli_connect("localhost", "my_user", "my_password", "my_db");
+
+// Verifica della connessione
+if (mysqli_connect_errno()) {
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
     exit();
 }
 
 // Preparazione della query SQL per selezionare gli utenti
-$sql = "SELECT * FROM utenti";
+$sql = "SELECT id, username, password, created_at FROM users ORDER BY username";
 
 // Esecuzione della query
-$result = $mysqli->query($sql);
+$result = mysqli_query($mysqli, $sql);
 
 // Verifica che ci siano righe nel risultato
-if ($result->num_rows > 0) {
+if (mysqli_num_rows($result) > 0) {
     // Inizio della stampa della tabella HTML per mostrare i risultati
     echo "<html><body>";
     echo "<h2>Lista degli utenti registrati:</h2>";
     echo "<table border='1'>";
-    echo "<tr><th>ID</th><th>Nome</th><th>Cognome</th><th>Email</th></tr>";
+    echo "<tr><th>ID</th><th>Username</th><th>Password</th><th>Created At</th></tr>";
 
     // Fetch delle righe come array associativo e stampa dei dati
-    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+    while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
         echo "<tr>";
-        echo "<td>" . $row["id"] . "</td>";
-        echo "<td>" . $row["nome"] . "</td>";
-        echo "<td>" . $row["cognome"] . "</td>";
-	echo "<td>" . $row["email"] . "</td>";
+        echo "<td>" . htmlspecialchars($row["id"]) . "</td>";
+        echo "<td>" . htmlspecialchars($row["username"]) . "</td>";
+        echo "<td>" . htmlspecialchars($row["password"]) . "</td>";  // Nota: mostrare la password in chiaro non è sicuro
+        echo "<td>" . htmlspecialchars($row["created_at"]) . "</td>";
         echo "</tr>";
     }
     echo "</table>";
-    echo '<a href="login.html">Loggati!</a>';
     echo "</body></html>";
 
     // Liberazione del result set
-    $result->free_result();
-} // Altrimenti se non ci sono righe nel risultato stampa un messaggio a video
-else {
+    mysqli_free_result($result);
+} else {
     echo "Nessun utente trovato.";
 }
 
 // Chiusura della connessione al database
-$mysqli->close();
+mysqli_close($mysqli);
 ?>
-
-
