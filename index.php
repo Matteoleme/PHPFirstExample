@@ -23,7 +23,7 @@ if (mysqli_num_rows($result) > 0) {
     echo "<tr><th>ID</th><th>Nome</th><th>Cognome</th><th>Email</th></tr>";
 
     // Fetch delle righe come array associativo e stampa dei dati
-    while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+    while ($row = mysqli_fetch_assoc($result)) {
         echo "<tr>";
         echo "<td>" . htmlspecialchars($row["id"]) . "</td>";
         echo "<td>" . htmlspecialchars($row["username"]) . "</td>";
